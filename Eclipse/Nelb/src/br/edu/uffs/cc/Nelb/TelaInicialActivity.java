@@ -16,7 +16,6 @@ public class TelaInicialActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
       super.onCreate(savedInstanceState);
       setContentView(R.layout.tela_inicial);
-    //  setupElements();
       btLocalizar = (Button) findViewById(R.id.btLocalizar);
       btLocalizar.setOnClickListener(new View.OnClickListener() {
           public void onClick(View v){
@@ -29,9 +28,4 @@ public class TelaInicialActivity extends Activity {
       
   }
 
-  // Método usado para importar os elementos da classe R
-  
-  //Método que faz a leitura de fato dos valores recebidos do GPS
- 
- 
 }
