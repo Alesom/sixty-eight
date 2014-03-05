@@ -14,16 +14,16 @@
 
 <script type="text/javascript">
 
-var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
+var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
 
 
 function preload() {
 
-    game.load.image('sky', 'assets/sky.png');
+    game.load.image('sky', 'assets/Fundo4.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('Jhosua', 'assets/Qua8.png', 110, 95,9);
-	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini2.png', 320, 71,4);
+    game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
+	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
 	game.load.image('bullet', 'assets/bala2.png');
 }
 
@@ -34,6 +34,7 @@ var platforms;
 var cursors;
 var ponteiroParaTiro = 0;
 var inimigos;
+var backgroundTown;
 
 var stars;
 var score = 0;
@@ -46,8 +47,11 @@ var fireButton;//happen
 function create() {
 
     //  A simple background for our game
-    game.add.sprite(0, 0, 'sky');
-
+    //game.add.sprite(0, 0, 'sky');
+	backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
+	
+	game.world.setBounds(0, 0, 3200, 2048);
+	
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
 
@@ -99,14 +103,6 @@ function create() {
 		ini.play('right_ini');
 		ini.body.velocity.x=60;
 	}
-	/*
-	ini.body.gravity.y=6;
-	ini.body.collideWorldBounds = true;
-	ini.animations.add('left_ini', [0, 1], 8, true);
-    ini.animations.add('right_ini', [2, 3], 8, true);
-	ini.play('right_ini');
-	*/
-	
 	
 	//  Our two animations, walking left and right.
     player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -134,12 +130,16 @@ function create() {
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+	
+	game.camera.follow(player);
 }
 
 function update() {
 
     //  Collide the player and the stars with the platforms
-    game.physics.collide(player, platforms);
+   //	 backgroundTown.tilePosition.x+=2;
+	
+	game.physics.collide(player, platforms);
     game.physics.collide(stars, platforms);
 	game.physics.collide(inimigos, platforms);
     //  Checks to see if the player overlaps with any of the stars, if he does call the collectStar function
