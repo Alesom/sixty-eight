@@ -18,8 +18,9 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, crea
 
 
 function preload() {
-
     game.load.image('sky', 'assets/Fundo4.png');
+	game.load.image('morreu', 'assets/Morreu.png');
+	game.load.image('chao', 'assets/Ground2.png');
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
@@ -36,6 +37,7 @@ var ponteiroParaTiro = 0;
 var inimigos;
 var backgroundTown;
 
+var stateText;
 var stars;
 var score = 0;
 var scoreText;
@@ -56,7 +58,7 @@ function create() {
     platforms = game.add.group();
 
     // Here we create the ground.
-    var ground = platforms.create(0, game.world.height - 64, 'ground');
+    var ground = platforms.create(0, game.world.height - 200, 'chao');
 
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
     ground.scale.setTo(2, 2);
@@ -123,7 +125,10 @@ function create() {
         //  This just gives each star a slightly random bounce value
         star.body.bounce.y = 0.7 + Math.random() * 0.2;
     }
-
+	
+	stateText = game.add.text(/*game.world.centerX*/2000,/*game.world.centerY*/0,'', { fontSize: '84px', fill: '#FFF' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
     //  The score
     scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
 
@@ -171,7 +176,7 @@ function update() {
     }
 	//  Allow the player to jump if they are touching the ground.
 	if (cursors.up.isDown && player.body.touching.down){
-		player.body.velocity.y = -350;//altura do pulo
+		player.body.velocity.y = -1200;//altura do pulo
 	}
 	for(var i=0; i < 2; i++){//novo 
 		if (inimigos.getAt(i)){		
@@ -186,9 +191,16 @@ function update() {
 	game.physics.overlap(inimigos, bullets, KillInimi, null, this);
 }
 
-function KillPlayer(inimigo, player){
-	inimigo.kill();
-	//player.kill();
+function KillPlayer(player, inimigo){
+	//inimigo.kill();
+	var x=player.body.x;
+	var y=player.body.y;
+	player.kill();
+	var morreu= game.add.sprite(x, y+20, 'morreu');
+	morreu.body.velocity.y=-155;
+	stateText.content=" GAME OVER \n Click to restart";    
+	stateText.visible = true;
+    game.input.onTap.addOnce(restart,this);
 }
 
 function KillInimi(inimigo, bullet){
@@ -200,7 +212,7 @@ function collectStar (player, star) {
     
     // Removes the star from the screen
     star.kill();
-
+	
     //  Add and update the score
     score += 10;
     scoreText.content = 'Score: ' + score;
@@ -232,6 +244,16 @@ function fireBullet (ponteiroParaTiro) {
 
 function resetBullet (bullet) {
     bullet.kill();
+
+}
+
+
+function restart () {
+    //revives the player
+    player.revive();
+	inimigos.callAll.revive();
+    //hides the text
+    stateText.visible = false;
 
 }
 
