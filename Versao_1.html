@@ -27,7 +27,6 @@ function preload() {
     game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
 	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
 	game.load.image('bullet', 'assets/bala2.png');
-	//game.load.image('diamante', 'assets/diamond.png');
 	game.load.image('NovoJogo', 'assets/LetrasB2.png');
 	
 }
@@ -40,6 +39,7 @@ var cursors;
 var ponteiroParaTiro = 0;
 var inimigos;
 var backgroundTown;
+var criaPlayer_bool=true;
 
 var stars;
 var score = 0;
@@ -94,7 +94,9 @@ function create() {
     ledge.body.immovable = true;
 		
 	// The player and its settings
-    criaPlayer();
+	if (criaPlayer_bool==true){
+		criaPlayer();
+	}
 	//player = game.add.sprite(200, 200, 'Jhosua');
 	//ini = game.add.sprite(60, 0,'Bar_ini');
 	//ini.body.gravity.y=6;
@@ -216,14 +218,14 @@ function update() {
 
 function KillPlayer(player, inimigo){
 	//inimigo.kill();
+	criaPlayer_bool=false;
 	player.kill();
 	NovoJogo.visible = true;
 	var x=player.body.x;
 	var y=player.body.y;
 	morreu= game.add.sprite(x, y+20, 'morreu');
 	morreu.body.velocity.y=-155;
-	game.input.onTap.addOnce(restart,this);
-	
+	game.input.onTap.addOnce(restart,this);	
 }
 
 function KillInimi(inimigo, bullet){
@@ -287,10 +289,14 @@ function criaIni(){
 function restart () {
     //revives the player
 	//morreu.visible=false;
+	
 	morreu.kill();
 	inimigos.removeAll();
 	criaIni();
-	criaPlayer();
+	if (criaPlayer_bool==false){
+		criaPlayer();
+	}
+	criaPlayer_bool=true;
 	//alert('Reniciar?');
 	//player.kill(); //já morreu.
     //inimigos.callAll().kill();
@@ -298,7 +304,6 @@ function restart () {
 	
 //	player.revive();
 	NovoJogo.visible = false;
-	
 }
 
 
