@@ -28,7 +28,12 @@ function preload() {
 	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
 	game.load.image('bullet', 'assets/bala2.png');
 	game.load.image('NovoJogo', 'assets/LetrasB2.png');
-	
+	game.load.image('plataformaPredio1','assets/PlataformaPredio1.png');
+	game.load.image('plataformaPredio2','assets/PlataformaPredio2.png');
+	game.load.image('plataformaPredio3','assets/PlataformaPredio3.png');
+	game.load.image('plataformaPredio4','assets/PlataformaPredio4.png');
+	game.load.image('plataformaPredio5','assets/PlataformaPredio5.png');
+	game.load.image('plataformaPredio6','assets/PlataformaPredio6.png');
 }
 
 
@@ -63,21 +68,39 @@ function create() {
 	
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
-
+	
     // Here we create the ground.
     var ground = platforms.create(0, game.world.height - 200, 'chao');
-
+	
     //  Scale it to fit the width of the game (the original sprite is 400x32 in size)
     ground.scale.setTo(2, 2);
 
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
 	
-	var ground2 = platforms.create(520,1000, 'chao');
-
+	var ground2 = platforms.create(2,1066, 'plataformaPredio1');
     ground2.scale.setTo(2, 2);
-
-    ground2.body.immovable = true;
+	ground2.body.immovable = true;
+	
+	var ground3 = platforms.create(492,325, 'plataformaPredio2');
+	ground3.body.immovable = true;
+	ground3.scale.setTo(2, 2);
+	
+	var ground4 = platforms.create(1004,1249, 'plataformaPredio3');
+    ground4.scale.setTo(2, 2);
+	ground4.body.immovable = true;
+	
+	var ground5 = platforms.create(1955,605, 'plataformaPredio4');
+    ground5.scale.setTo(2, 2);
+	ground5.body.immovable = true;
+	
+	var ground6 = platforms.create(2378,1249, 'plataformaPredio5');
+    ground6.scale.setTo(2, 2);
+	ground6.body.immovable = true;
+	
+	var ground7 = platforms.create(2700,330, 'plataformaPredio6');
+    ground7.scale.setTo(2, 2);
+	ground7.body.immovable = true;
 	
 	
 	bullets = game.add.group();//happen
@@ -87,11 +110,11 @@ function create() {
     bullets.setAll('outOfBoundsKill', true);//happen
 	
 	
-	var ledge = platforms.create(400, 400, 'ground');
-    ledge.body.immovable = true;
+	//var ledge = platforms.create(400, 400, 'ground');
+    //ledge.body.immovable = true;
 
-    ledge = platforms.create(-150, 250, 'ground');
-    ledge.body.immovable = true;
+    //ledge = platforms.create(-150, 250, 'ground');
+    //ledge.body.immovable = true;
 		
 	// The player and its settings
 	if (criaPlayer_bool==true){
