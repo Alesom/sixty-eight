@@ -19,6 +19,7 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, crea
 
 function preload() {
     game.load.image('sky', 'assets/Fundo4.png');
+	game.load.image('city', 'assets/City.png');
 	game.load.image('morreu', 'assets/Morreu.png');
 	game.load.image('chao', 'assets/Ground2.png');
     game.load.image('ground', 'assets/platform.png');
@@ -26,6 +27,9 @@ function preload() {
     game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
 	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
 	game.load.image('bullet', 'assets/bala2.png');
+	//game.load.image('diamante', 'assets/diamond.png');
+	game.load.image('NovoJogo', 'assets/LetrasB2.png');
+	
 }
 
 
@@ -37,14 +41,17 @@ var ponteiroParaTiro = 0;
 var inimigos;
 var backgroundTown;
 
-var stateText;
 var stars;
 var score = 0;
 var scoreText;
+var stateText;
 
 var bullets;//happen
 var bulletTime = 0;//happen
 var fireButton;//happen
+//var diamante;
+var NovoJogo;
+var morreu;
 
 function create() {
 
@@ -53,6 +60,7 @@ function create() {
 	backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
 	
 	game.world.setBounds(0, 0, 3200, 2048);
+	game.add.sprite(0,19,'city');
 	
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
@@ -66,15 +74,34 @@ function create() {
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
 	
+	var ground2 = platforms.create(520,1000, 'chao');
+
+    ground2.scale.setTo(2, 2);
+
+    ground2.body.immovable = true;
+	
+	
 	bullets = game.add.group();//happen
     bullets.createMultiple(30, 'bullet');//happen
     bullets.setAll('anchor.x', 0.5);//0.5//happen
     bullets.setAll('anchor.y', 0.5);//1//happen	
     bullets.setAll('outOfBoundsKill', true);//happen
 	    
+	NovoJogo= game.add.sprite(300, 320, 'NovoJogo');
+	NovoJogo.fixedToCamera=true;
+	NovoJogo.cameraOffset.x=450;
+    NovoJogo.cameraOffset.y=300;
+	NovoJogo.visible=false;
+    NovoJogo.inputEnabled=true;
 	
-    //  Now let's create two ledges
-    var ledge = platforms.create(400, 400, 'ground');
+	
+	stateText = game.add.text(game.world.centerX,game.world.centerY,'', { fontSize: '84px', fill: '#111' });
+    stateText.anchor.setTo(0.5, 0.5);
+    stateText.visible = false;
+//	stateText.camera.Offset.x=400;
+	//stateText.camera.Offset.y=300;
+	
+	var ledge = platforms.create(400, 400, 'ground');
     ledge.body.immovable = true;
 
     ledge = platforms.create(-150, 250, 'ground');
@@ -126,17 +153,14 @@ function create() {
         star.body.bounce.y = 0.7 + Math.random() * 0.2;
     }
 	
-	stateText = game.add.text(/*game.world.centerX*/2000,/*game.world.centerY*/0,'', { fontSize: '84px', fill: '#FFF' });
-    stateText.anchor.setTo(0.5, 0.5);
-    stateText.visible = false;
-    //  The score
-    scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-
     //  Our controls.
     cursors = game.input.keyboard.createCursorKeys();
     fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 	
 	game.camera.follow(player);
+	
+	
+	
 }
 
 function update() {
@@ -187,20 +211,26 @@ function update() {
 			}
 		}
 	}//end novo
+	if (NovoJogo.visible){
+		NovoJogo.events.onInputDown.add(restart,this);
+	}
 	game.physics.overlap(inimigos, player, KillPlayer, null, this);
 	game.physics.overlap(inimigos, bullets, KillInimi, null, this);
 }
 
 function KillPlayer(player, inimigo){
 	//inimigo.kill();
+//	morreu.visible = false;
+	NovoJogo.visible = true;
 	var x=player.body.x;
 	var y=player.body.y;
 	player.kill();
-	var morreu= game.add.sprite(x, y+20, 'morreu');
+	/*var*/ morreu= game.add.sprite(x, y+20, 'morreu');
 	morreu.body.velocity.y=-155;
-	stateText.content=" GAME OVER \n Click to restart";    
-	stateText.visible = true;
-    game.input.onTap.addOnce(restart,this);
+//	stateText.content = " You Lose, \n Click to restart";
+  //  stateText.visible = true;
+ // game.input.onTap.addOnce(restart,this);
+	
 }
 
 function KillInimi(inimigo, bullet){
@@ -209,14 +239,7 @@ function KillInimi(inimigo, bullet){
 }
 
 function collectStar (player, star) {
-    
-    // Removes the star from the screen
-    star.kill();
-	
-    //  Add and update the score
-    score += 10;
-    scoreText.content = 'Score: ' + score;
-
+      star.kill();
 }
 
 function fireBullet (ponteiroParaTiro) {
@@ -250,10 +273,15 @@ function resetBullet (bullet) {
 
 function restart () {
     //revives the player
-    player.revive();
-	inimigos.callAll.revive();
+	
+	//player.kill(); //já morreu.
+    inimigos.callAll.kill();
+    
+	player.revive();
+	inimigos.callAll('revive');
     //hides the text
-    stateText.visible = false;
+	NovoJogo.visible = false;
+	//stateText.visible = false;
 
 }
 
