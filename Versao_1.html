@@ -19,7 +19,7 @@ var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, crea
 
 function preload() {
     game.load.image('sky', 'assets/Fundo4.png');
-	game.load.image('city', 'assets/City.png');
+	game.load.image('city', 'assets/City4.png');
 	game.load.image('morreu', 'assets/Morreu.png');
 	game.load.image('chao', 'assets/Ground2.png');
     game.load.image('ground', 'assets/platform.png');
@@ -28,12 +28,14 @@ function preload() {
 	game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
 	game.load.image('bullet', 'assets/bala2.png');
 	game.load.image('NovoJogo', 'assets/LetrasB2.png');
-	game.load.image('plataformaPredio1','assets/PlataformaPredio1.png');
-	game.load.image('plataformaPredio2','assets/PlataformaPredio2.png');
-	game.load.image('plataformaPredio3','assets/PlataformaPredio3.png');
-	game.load.image('plataformaPredio4','assets/PlataformaPredio4.png');
-	game.load.image('plataformaPredio5','assets/PlataformaPredio5.png');
-	game.load.image('plataformaPredio6','assets/PlataformaPredio6.png');
+	game.load.image('plataformaPredio1','assets/PlataformaPredio11.png');
+	game.load.image('plataformaPredio2','assets/PlataformaPredio21.png');
+	game.load.image('plataformaPredio3','assets/PlataformaPredio31.png');
+	game.load.image('plataformaPredio4','assets/PlataformaPredio41.png');
+	game.load.image('plataformaPredio5','assets/PlataformaPredio51.png');
+	game.load.image('plataformaPredio6','assets/PlataformaPredio62.png');
+	game.load.image('chave', 'assets/Chave.png');
+	game.load.image('porta', 'assets/TheDoors.png');
 }
 
 
@@ -56,6 +58,11 @@ var fireButton;//happen
 //var diamante;
 var NovoJogo;
 var morreu;
+var chave;
+var pegouChave=false;
+var contadorIni=10;
+var portas;
+
 
 function create() {
 
@@ -64,7 +71,7 @@ function create() {
 	backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
 	
 	game.world.setBounds(0, 0, 3200, 2048);
-	game.add.sprite(0,19,'city');
+	game.add.sprite(0,-109,'city');
 	
     //  The platforms group contains the ground and the 2 ledges we can jump on
     platforms = game.add.group();
@@ -78,30 +85,46 @@ function create() {
     //  This stops it from falling away when you jump on it
     ground.body.immovable = true;
 	
-	var ground2 = platforms.create(2,1066, 'plataformaPredio1');
+	portas = game.add.group();
+	//portas.body.immovable=true;
+	
+	var ground2 = platforms.create(2,1066+10, 'plataformaPredio1');
     ground2.scale.setTo(2, 2);
 	ground2.body.immovable = true;
 	
-	var ground3 = platforms.create(492,325, 'plataformaPredio2');
+	var porta1 = platforms.create(168, game.world.height - 317, 'porta');
+	porta1.body.immovable=true;
+	
+	var ground3 = platforms.create(492,321+10, 'plataformaPredio2');
 	ground3.body.immovable = true;
 	ground3.scale.setTo(2, 2);
 	
-	var ground4 = platforms.create(1004,1249, 'plataformaPredio3');
+	var porta2 = platforms.create (664, game.world.height - 317, 'porta');
+	porta2.body.immovable=true;
+	
+	var ground4 = platforms.create(1004,1249+10, 'plataformaPredio3');
     ground4.scale.setTo(2, 2);
 	ground4.body.immovable = true;
 	
-	var ground5 = platforms.create(1955,605, 'plataformaPredio4');
+	var porta3 = platforms.create (1180, game.world.height - 317, 'porta');
+	porta3.body.immovable=true;
+	
+	var ground5 = platforms.create(1955,605+10, 'plataformaPredio4');
     ground5.scale.setTo(2, 2);
 	ground5.body.immovable = true;
 	
-	var ground6 = platforms.create(2378,1249, 'plataformaPredio5');
+	var porta4 = platforms.create (2106, game.world.height - 317, 'porta');
+	porta4.body.immovable=true;
+	
+	var ground6 = platforms.create(2378,1249+10, 'plataformaPredio5');
     ground6.scale.setTo(2, 2);
 	ground6.body.immovable = true;
 	
-	var ground7 = platforms.create(2700,330, 'plataformaPredio6');
+	var ground7 = platforms.create(2720,330-1600+10, 'plataformaPredio6');
     ground7.scale.setTo(2, 2);
 	ground7.body.immovable = true;
 	
+	criaChave();
 	
 	bullets = game.add.group();//happen
     bullets.createMultiple(30, 'bullet');//happen
@@ -223,7 +246,7 @@ function update() {
 	if (cursors.up.isDown && player.body.touching.down){
 		player.body.velocity.y = -1200;//altura do pulo
 	}
-	for(var i=0; i < 5; i++){//novo 
+	for(var i=0; i < contadorIni; i++){//novo 
 		if (inimigos.getAt(i)){
 			switch (i){
 				case 0:
@@ -271,6 +294,53 @@ function update() {
 						inimigos.getAt(i).body.velocity.x=60;
 					}
 					break;
+					
+					//segundo bloco
+				case 5:
+					if (inimigos.getAt(i).body.x<10){//300
+						inimigos.getAt(i).play('right_ini');
+						inimigos.getAt(i).body.velocity.x=60;
+					}else if (inimigos.getAt(i).body.x>300){
+						inimigos.getAt(i).play('left_ini');
+						inimigos.getAt(i).body.velocity.x=-60;
+					}
+					break;
+				case 6:
+					if (inimigos.getAt(i).body.x<495){//720
+						inimigos.getAt(i).play('right_ini');
+						inimigos.getAt(i).body.velocity.x=60;
+					}else if (inimigos.getAt(i).body.x>720){
+						inimigos.getAt(i).play('left_ini');
+						inimigos.getAt(i).body.velocity.x=-60;
+					}
+					break;
+				case 7:
+					if (inimigos.getAt(i).body.x<1004){//1300
+						inimigos.getAt(i).play('right_ini');
+						inimigos.getAt(i).body.velocity.x=60;
+					}else if (inimigos.getAt(i).body.x>1300){
+						inimigos.getAt(i).play('left_ini');
+						inimigos.getAt(i).body.velocity.x=-60;
+					}
+					break;
+				case 8: 
+					if (inimigos.getAt(i).body.x<1950){//2200
+						inimigos.getAt(i).play('right_ini');
+						inimigos.getAt(i).body.velocity.x=60;
+					}else if (inimigos.getAt(i).body.x>2200){
+						inimigos.getAt(i).play('left_ini');
+						inimigos.getAt(i).body.velocity.x=-60;
+					}
+					break;
+				case 9:
+					if (inimigos.getAt(i).body.x<2368){//2520
+						inimigos.getAt(i).play('right_ini');
+						inimigos.getAt(i).body.velocity.x=60;
+					}else if (inimigos.getAt(i).body.x>2520){
+						inimigos.getAt(i).play('left_ini');
+						inimigos.getAt(i).body.velocity.x=-60;
+					}
+					break;
 				default:				
 					inimigos.getAt(i).body.x=0;
 					inimigos.getAt(i).body.y=i*400;
@@ -283,10 +353,18 @@ function update() {
 		NovoJogo.events.onInputDown.add(restart,this);
 	}
 //	game.physics.overlap(inimigos, player, KillPlayer, null, this); ARRUMAR DPS!
-
+	game.physics.overlap(chave, player, getChave, null, this);
 	game.physics.overlap(inimigos, bullets, KillInimi, null, this);
 }
+function criaChave(){
+	chave=game.add.sprite(200,400,'chave');
+	chave.scale.setTo(0.2,0.2);
+}
 
+function getChave (chave, player){
+	chave.kill();
+	pegouChave=true;
+}
 function KillPlayer(player, inimigo){
 	//inimigo.kill();
 	criaPlayer_bool=false;
@@ -330,8 +408,8 @@ function fireBullet (ponteiroParaTiro) {
 }
 
 function criaPlayer(){
-	player = game.add.sprite(200, 200, 'Jhosua');
-	player.anchor.setTo(0.5, 0.5);//happen
+	player = game.add.sprite(2320, 500, 'Jhosua');
+	player.anchor.setTo(0.5, 0.5);
     player.body.bounce.y = 0.2;
     player.body.gravity.y = 6;
     player.body.collideWorldBounds = true;
@@ -345,16 +423,7 @@ function resetBullet (bullet) {
 }
 
 function criaIni(){
-	for (var i1 = 0; i1 < 5; i1++){
-		/*if (i1<2){
-			var ini = inimigos.create(game.world.randomX, game.world.randomY,'Bar_ini');//rand
-			ini.body.gravity.y=6;
-			//ini.body.collideWorldBounds = true;
-			ini.animations.add('left_ini', [0, 1], 8, true);
-			ini.animations.add('right_ini', [2, 3], 8, true);
-			ini.play('right_ini');
-			ini.body.velocity.x=60;
-		}else{*/
+	for (var i1 = 0; i1 < contadorIni; i1++){
 			switch (i1){
 				case 0:
 					var ini = inimigos.create(2,1066-100,'Bar_ini');
@@ -384,8 +453,8 @@ function criaIni(){
 					ini.body.velocity.x=60;
 					break;
 				case 3:
-					var ini = inimigos.create(1955,605-100,'Bar_ini');
-					ini.body.gravity.y=6;
+					var ini = inimigos.create(1900,605-100,'Bar_ini');
+					ini.body.gravity.y = 6;
 					ini.body.collideWorldBounds = true;
 					ini.animations.add('left_ini', [0, 1], 8, true);
 					ini.animations.add('right_ini', [2, 3], 8, true);
@@ -400,6 +469,53 @@ function criaIni(){
 					ini.animations.add('right_ini', [2, 3], 8, true);
 					ini.play('right_ini');
 					ini.body.velocity.x=60;
+					break;
+					
+					//segundo bloco
+				case 5:
+					var ini = inimigos.create(300,1066-100,'Bar_ini');
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = true;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					ini.play('left_ini');
+					ini.body.velocity.x=-60;
+					break;
+				case 6:
+					var ini = inimigos.create(720,325-100,'Bar_ini');
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = true;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					ini.play('left_ini');
+					ini.body.velocity.x=-60;
+					break;
+				case 7:
+					var ini = inimigos.create(1300,1249-100,'Bar_ini');
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = true;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					ini.play('left_ini');
+					ini.body.velocity.x=-60;
+					break;
+				case 8:
+					var ini = inimigos.create(2250,605-100,'Bar_ini');
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = true;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					ini.play('left_ini');
+					ini.body.velocity.x=-60;
+					break;
+				case 9:
+					var ini = inimigos.create(2520,1249-100,'Bar_ini');
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = true;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					ini.play('left_ini');
+					ini.body.velocity.x=-60;
 					break;
 				default:
 					break;	
@@ -424,7 +540,9 @@ function restart () {
 	//player.kill(); //já morreu.
     //inimigos.callAll().kill();
     //inimigos.removeAll();
-	
+	chave.kill();
+	criaChave();
+	pegouChave=false;
 //	player.revive();
 	NovoJogo.visible = false;
 }
