@@ -35,7 +35,7 @@ function preload() {
 	game.load.image('plataformaPredio5','assets/PlataformaPredio51.png');
 	game.load.image('plataformaPredio6','assets/PlataformaPredio62.png');
 	game.load.image('chave', 'assets/Chave.png');
-	game.load.image('porta', 'assets/TheDoors.png');
+	game.load.image('porta', 'assets/TheDoors2.png');
 }
 
 
@@ -47,6 +47,9 @@ var ponteiroParaTiro = 0;
 var inimigos;
 var backgroundTown;
 var criaPlayer_bool=true;
+
+//var segundos=0;
+
 
 var stars;
 var score = 0;
@@ -60,7 +63,7 @@ var NovoJogo;
 var morreu;
 var chave;
 var pegouChave=false;
-var contadorIni=10;
+var contadorIni=20;
 var portas;
 
 
@@ -92,28 +95,28 @@ function create() {
     ground2.scale.setTo(2, 2);
 	ground2.body.immovable = true;
 	
-	var porta1 = platforms.create(168, game.world.height - 317, 'porta');
+	var porta1 = portas.create(168, game.world.height - 317, 'porta');
 	porta1.body.immovable=true;
 	
 	var ground3 = platforms.create(492,321+10, 'plataformaPredio2');
 	ground3.body.immovable = true;
 	ground3.scale.setTo(2, 2);
 	
-	var porta2 = platforms.create (664, game.world.height - 317, 'porta');
+	var porta2 = portas.create (664, game.world.height - 317, 'porta');
 	porta2.body.immovable=true;
 	
 	var ground4 = platforms.create(1004,1249+10, 'plataformaPredio3');
     ground4.scale.setTo(2, 2);
 	ground4.body.immovable = true;
 	
-	var porta3 = platforms.create (1180, game.world.height - 317, 'porta');
+	var porta3 = portas.create (1180, game.world.height - 317, 'porta');
 	porta3.body.immovable=true;
 	
 	var ground5 = platforms.create(1955,605+10, 'plataformaPredio4');
     ground5.scale.setTo(2, 2);
 	ground5.body.immovable = true;
 	
-	var porta4 = platforms.create (2106, game.world.height - 317, 'porta');
+	var porta4 = portas.create (2106, game.world.height - 317, 'porta');
 	porta4.body.immovable=true;
 	
 	var ground6 = platforms.create(2378,1249+10, 'plataformaPredio5');
@@ -181,7 +184,7 @@ function create() {
 	
 	
 	//  Here we'll create 12 of them evenly spaced apart
-    for (var i = 0; i < 12; i++){
+    for (var i = 0; i < 122; i++){
         //  Create a star inside of the 'stars' group
         var star = stars.create(i * 70, 0, 'star');
 
@@ -205,8 +208,8 @@ function create() {
 	NovoJogo.visible=false;
     NovoJogo.inputEnabled=true;
 	
+//	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 }
-
 function update() {
 
     //  Collide the player and the stars with the platforms
@@ -228,16 +231,19 @@ function update() {
 		player.body.velocity.x = -150;
 		player.animations.play('left');
 		ponteiroParaTiro=1;
+	//	segundos++;
 	}else if (cursors.right.isDown){
 		//  Move to the right
 		player.body.velocity.x = 150;
 		player.animations.play('right');
 		ponteiroParaTiro=2;
+	//	segundos++;
 	}else{
 		//  Stand still
 		player.animations.stop();
 		player.frame = 4;
 		ponteiroParaTiro=0;
+		//segundos++;
 	}
 	if (fireButton.isDown && ponteiroParaTiro!=0){
         fireBullet(ponteiroParaTiro);
@@ -341,21 +347,52 @@ function update() {
 						inimigos.getAt(i).body.velocity.x=-60;
 					}
 					break;
-				default:				
-					inimigos.getAt(i).body.x=0;
-					inimigos.getAt(i).body.y=i*400;
+				default:
+					if (inimigos.getAt(i).body.x<0 || inimigos.getAt(i).body.x> game.world.width-150){
+						inimigos.getAt(i).body.x=game.world.randomX;//here
+						inimigos.getAt(i).body.y=game.world.randomY;
+					//	if ((Math.random()%2)==0){
+				//			ini.play('left_ini');
+				//			ini.body.velocity.x=-60;
+				//		}else{
+			///				ini.play('right_ini');
+			//				ini.body.velocity.x=60;
+				//		}
+					}
 					break;
 				}
 		}
 	}//end novo
-	
 	if (NovoJogo.visible){
 		NovoJogo.events.onInputDown.add(restart,this);
 	}
 //	game.physics.overlap(inimigos, player, KillPlayer, null, this); ARRUMAR DPS!
 	game.physics.overlap(chave, player, getChave, null, this);
 	game.physics.overlap(inimigos, bullets, KillInimi, null, this);
+	
+//	game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+//	if ((segundos%4597)==0){
+//		updateCounter();
+//	}
 }
+
+/*function updateCounter(){
+	//segundos++;
+	//alert('clicked');
+	//if ((segundos%23)==0){
+		contadorIni++;
+		var ini = inimigos.create(/*game.world.randomX, game.world.randomY0,0,'Bar_ini');
+		ini.body.gravity.y=6;
+		ini.body.collideWorldBounds = false;
+		ini.animations.add('left_ini', [0, 1], 8, true);
+		ini.animations.add('right_ini', [2, 3], 8, true);
+		ini.play('right_ini');
+		ini.body.velocity.x=60;
+	//}
+}*/
+
+
+	
 function criaChave(){
 	chave=game.add.sprite(200,400,'chave');
 	chave.scale.setTo(0.2,0.2);
@@ -518,8 +555,19 @@ function criaIni(){
 					ini.body.velocity.x=-60;
 					break;
 				default:
-					break;	
-			
+					var ini = inimigos.create(game.world.randomX,game.world.randomY,'Bar_ini');//here
+					ini.body.gravity.y=6;
+					ini.body.collideWorldBounds = false;
+					ini.animations.add('left_ini', [0, 1], 8, true);
+					ini.animations.add('right_ini', [2, 3], 8, true);
+					if ((game.world.randomX%2)==0){
+						ini.play('left_ini');
+						ini.body.velocity.x=-60;
+					}else{
+						ini.play('right_ini');
+						ini.body.velocity.x=60;
+					}
+					break;
 		}
 	}
 }
