@@ -2,7 +2,7 @@
 <html lang="en"> 
 <head> 
 	<meta charset="UTF-8" />
-	<title>Alesom Games</title>
+	<title>Sixty-eight</title>
 	<script type="text/javascript" src="js/phaser.min.js"></script>
     <style type="text/css">
         body {
@@ -11,7 +11,6 @@
     </style>
 </head>
 <body>
-
 <script type="text/javascript">
 
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
@@ -75,6 +74,7 @@ var premio1=false;
 var premio2=false;
 var premio3=false;
 var premio4=false;
+var premio5=false;
 
 
 function create() {
@@ -342,7 +342,7 @@ function criaPremios(){
 function colidePorta(player, porta){
 	if (cursors.down.isDown && (clickSingle==true)){
 		clickSingle=false;
-		for (var i=0; i<4; i++){
+		for (var i=0; i<5; i++){
 			if (portas.getAt(i)==porta){
 				switch (i){
 					case 0:
@@ -381,6 +381,15 @@ function colidePorta(player, porta){
 							img.inputEnabled=true;	
 						}
 						break;
+					case 4:
+						if (premio5==false){
+							var img= game.add.button(305, 200, 'pote', colidePorta5, this, 2, 1, 0);
+							img.fixedToCamera=true;
+							img.cameraOffset.x=450;
+							img.cameraOffset.y=100;
+							img.inputEnabled=true;	
+						}
+						break;
 					
 				}
 			}
@@ -395,16 +404,24 @@ function colidePorta1(a1){
 	premio1=true;
 	a1.kill();
 }
+
 function colidePorta2(a1){
 	premio2=true;
 	a1.kill();
 }
+
 function colidePorta3(a1){
 	premio3=true;
 	a1.kill();
 }
+
 function colidePorta4(a1){
 	premio4=true;
+	a1.kill();
+}
+
+function colidePorta5(a1){
+	premio5=true;
 	a1.kill();
 }
 
@@ -568,7 +585,10 @@ function criaIni(){
 					ini.body.velocity.x=-60;
 					break;
 				default:
-					var ini = inimigos.create(game.world.randomX,game.world.randomY,'Bar_ini');//here
+					do{
+						var k=game.world.randomX;
+					}while(k<200);
+					var ini = inimigos.create(k,game.world.randomY,'Bar_ini');//here
 					ini.body.gravity.y=6;
 					ini.body.collideWorldBounds = false;
 					ini.animations.add('left_ini', [0, 1], 8, true);
@@ -605,6 +625,8 @@ function restart () {
 	premio2=false;
 	premio3=false;
 	premio4=false;
+	premio5=false;
+	
 }
 
 
