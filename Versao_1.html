@@ -78,7 +78,7 @@
 
 	var portaPremioPulo=false;
 	var portaPremioVida=false;
-	var img=null;
+	var img;
 
 	function create() {
 	
@@ -139,10 +139,10 @@
 		var porta7 = portas.create (2700, 860, 'porta');
 		porta4.body.immovable=true;
 		
-	/*	var ground8 = platforms.create(2720,800, 'plataformaPredio5');
+		var ground8 = platforms.create(2720,800, 'plataformaPredio5');
 		ground8.scale.setTo(0.5,0.5);
 		ground8.body.immovable = true;
-	*/
+	
 		//premios=game.add.group();
 	//	criaPremios();
 		criaChave();
@@ -467,9 +467,7 @@
 		pegouChave=true;
 	}
 	function KillPlayer(player, inimigo){
-		if (img){
-			img.kill();		
-		}
+		img.kill();
 		criaPlayer_bool=false;
 		player.kill();
 		NovoJogo.visible = true;
