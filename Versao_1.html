@@ -316,8 +316,14 @@
 						break;
 					default:
 						if (inimigos.getAt(i).body.x<0 || inimigos.getAt(i).body.x> game.world.width-150){
-							inimigos.getAt(i).body.x=game.world.randomX;//here
-							inimigos.getAt(i).body.y=game.world.randomY;
+							do{
+								var k=game.world.randomX;
+								var b=game.world.randomY;
+							}while(k<200 || b>(game.world.height-400));
+						
+							
+							inimigos.getAt(i).body.x=k;//here
+							inimigos.getAt(i).body.y=b;
 						}
 						break;
 					}
@@ -371,7 +377,7 @@
 							if (premio4==false){
 								img= game.add.button(305, 200, 'pote', colidePorta4, this, 2, 1, 0);
 								img.fixedToCamera=true;
-								img.cameraOffset.x=450;
+								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
 								img.inputEnabled=true;	
 							}
@@ -380,7 +386,7 @@
 							if (premio5==false){
 								img= game.add.button(305, 200, 'pote', colidePorta5, this, 2, 1, 0);
 								img.fixedToCamera=true;
-								img.cameraOffset.x=450;
+								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
 								img.inputEnabled=true;	
 							}
@@ -609,11 +615,11 @@
 					default:
 						do{
 							var k=game.world.randomX;
-							//var b=game.world.randomY;
-						}while(k<200);
-						do{
 							var b=game.world.randomY;
-						}while(b>game.world.height-400);
+						}while(k<200 || b>(game.world.height-400));
+					//	do{
+					//		var b=game.world.randomY;
+					//	}while(b>game.world.height-400);
 						
 						var ini = inimigos.create(k,b,'Bar_ini');//here
 						ini.body.gravity.y=1;
