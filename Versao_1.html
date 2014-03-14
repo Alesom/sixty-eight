@@ -12,6 +12,8 @@
 </head>
 <body>
 <script type="text/javascript">
+
+	
 	var game = new Phaser.Game(800, 600, Phaser.CANVAS, '', { preload: preload, create: create, update: update });
 
 
@@ -36,7 +38,7 @@
 		game.load.image('porta', 'assets/TheDoors2.png');
 		game.load.image('pote', 'assets/pote.png');
 		game.load.image('PrecisaChave', 'assets/Youneedakey.png');
-		game.load.image('VoceGanhou', 'assets/YouWin.png');
+		game.load.image('VoceGanhou', 'assets/Uwin.png');
 	}
 
 
@@ -76,9 +78,10 @@
 
 	var portaPremioPulo=false;
 	var portaPremioVida=false;
+	var img;
 
 	function create() {
-
+	
 		backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
 		
 		game.world.setBounds(0, 0, 3200, 2048);
@@ -212,7 +215,7 @@
 					a=400;
 			}else{
 				portaPremioPulo=false;
-				a=1200;
+				a=1100;
 			}
 			player.body.velocity.y = -a;//altura do pulo
 		}
@@ -327,6 +330,7 @@
 		game.physics.overlap(chave, player, getChave, null, this);
 		game.physics.overlap(inimigos, bullets, KillInimi, null, this);
 		game.physics.overlap(player, portas, colidePorta,null, this);
+//		restart ();
 
 	}
 
@@ -338,7 +342,7 @@
 					switch (i){
 						case 0:
 							if (premio1==false){
-								var img= game.add.button(33, 20, 'pote', colidePorta1, this, 2, 1, 0);
+								img= game.add.button(33, 20, 'pote', colidePorta1, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
@@ -347,7 +351,7 @@
 							break;
 						case 1:
 							if (premio2==false){
-								var img= game.add.button(330, 200, 'pote', colidePorta2, this, 2, 1, 0);
+								img= game.add.button(330, 200, 'pote', colidePorta2, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
@@ -356,7 +360,7 @@
 							break;
 						case 2:
 							if (premio3==false){
-								var img= game.add.button(330, 200, 'pote', colidePorta3, this, 2, 1, 0);
+								img= game.add.button(330, 200, 'pote', colidePorta3, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
@@ -365,7 +369,7 @@
 							break;
 						case 3:
 							if (premio4==false){
-								var img= game.add.button(305, 200, 'pote', colidePorta4, this, 2, 1, 0);
+								img= game.add.button(305, 200, 'pote', colidePorta4, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=450;
 								img.cameraOffset.y=100;
@@ -374,7 +378,7 @@
 							break;
 						case 4:
 							if (premio5==false){
-								var img= game.add.button(305, 200, 'pote', colidePorta5, this, 2, 1, 0);
+								img= game.add.button(305, 200, 'pote', colidePorta5, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=450;
 								img.cameraOffset.y=100;
@@ -383,15 +387,14 @@
 							break;
 						case 5:
 							if (pegouChave==true){
-								//Paranéns Campeão!
-								var img=game.add.button(305, 200, 'VoceGanhou', colidePorta6, this, 2, 1, 0);
+								player.kill();
+								img=game.add.button(0, 0, 'VoceGanhou', colidePorta6, this, 2, 1, 0);
 								img.fixedToCamera=true;
-								img.cameraOffset.x=250;
-								img.cameraOffset.y=100;
+								img.cameraOffset.x=0;
+								img.cameraOffset.y=0;
 								img.inputEnabled=true;
 							}else{
-								//O apartamento 68 Esta trancado! E é necessário ter a Chave para destranca-lo!
-								var img=game.add.button(305, 200, 'PrecisaChave', colidePorta7, this, 2, 1, 0);
+								img=game.add.button(305, 200, 'PrecisaChave', colidePorta7, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=250;
 								img.cameraOffset.y=100;
@@ -438,7 +441,7 @@
 	}
 	function colidePorta6(a1){
 		a1.kill();
-		window.self.location.href = "index.html";
+		window.self.location.href = "Versao_1.html";
 	}
 	function colidePorta7(a1){
 		a1.kill();
@@ -454,7 +457,7 @@
 		pegouChave=true;
 	}
 	function KillPlayer(player, inimigo){
-		//inimigo.kill();
+		img.kill();
 		criaPlayer_bool=false;
 		player.kill();
 		NovoJogo.visible = true;
@@ -513,7 +516,7 @@
 				switch (i1){
 					case 0:
 						var ini = inimigos.create(2,1066-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -522,7 +525,7 @@
 						break;
 					case 1:
 						var ini = inimigos.create(492,325-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -531,7 +534,7 @@
 						break;
 					case 2:
 						var ini = inimigos.create(1004,1249-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -540,7 +543,7 @@
 						break;
 					case 3:
 						var ini = inimigos.create(1900,605-100,'Bar_ini');
-						ini.body.gravity.y = 6;
+						ini.body.gravity.y = 1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -549,7 +552,7 @@
 						break;
 					case 4:
 						var ini = inimigos.create(2378,1249-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -560,7 +563,7 @@
 						//segundo bloco
 					case 5:
 						var ini = inimigos.create(300,1066-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -569,7 +572,7 @@
 						break;
 					case 6:
 						var ini = inimigos.create(720,325-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -578,7 +581,7 @@
 						break;
 					case 7:
 						var ini = inimigos.create(1300,1249-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -587,7 +590,7 @@
 						break;
 					case 8:
 						var ini = inimigos.create(2250,605-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -596,7 +599,7 @@
 						break;
 					case 9:
 						var ini = inimigos.create(2520,1249-100,'Bar_ini');
-						ini.body.gravity.y=6;
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = true;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -606,9 +609,14 @@
 					default:
 						do{
 							var k=game.world.randomX;
+							//var b=game.world.randomY;
 						}while(k<200);
-						var ini = inimigos.create(k,game.world.randomY,'Bar_ini');//here
-						ini.body.gravity.y=6;
+						do{
+							var b=game.world.randomY;
+						}while(b>game.world.height-400);
+						
+						var ini = inimigos.create(k,b,'Bar_ini');//here
+						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = false;
 						ini.animations.add('left_ini', [0, 1], 8, true);
 						ini.animations.add('right_ini', [2, 3], 8, true);
@@ -645,6 +653,11 @@
 		premio3=false;
 		premio4=false;
 		premio5=false;
+		
+	}
+	
+	function render(){
+		
 		
 	}
 
