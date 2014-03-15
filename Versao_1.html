@@ -22,10 +22,9 @@
 		game.load.image('city', 'assets/City4.png');
 		game.load.image('morreu', 'assets/Morreu.png');
 		game.load.image('chao', 'assets/Ground2.png');
-		game.load.image('ground', 'assets/platform.png');
 		game.load.image('star', 'assets/star.png');
 		game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
-		game.load.spritesheet('Bar_ini', 'assets/Baratas_ini6.png', 160, 39,4);
+		game.load.spritesheet('Bar_ini', 'assets/Baratas_ini10.png', 148, 39,4);
 		game.load.image('bullet', 'assets/bala2.png');
 		game.load.image('NovoJogo', 'assets/YouLose.png');
 		game.load.image('plataformaPredio1','assets/PlataformaPredio11.png');
@@ -79,7 +78,9 @@
 	var portaPremioPulo=false;
 	var portaPremioVida=false;
 	var img=null;
-
+	var vidaExtra=false;
+	
+	
 	function create() {
 	
 		backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
@@ -216,7 +217,7 @@
 		if (cursors.up.isDown && player.body.touching.down){
 			var a;
 			if (portaPremioPulo==false){
-					a=1200;
+					a=400;
 			}else{
 				portaPremioPulo=false;
 				a=1100;
@@ -470,17 +471,21 @@
 		pegouChave=true;
 	}
 	function KillPlayer(player, inimigo){
-		if (img!=null){
-			img.kill();		
+		if (vidaExtra==true){
+			
+		}else{
+			if (img!=null){
+				img.kill();		
+			}
+			criaPlayer_bool=false;
+			player.kill();
+			NovoJogo.visible = true;
+			var x=player.body.x;
+			var y=player.body.y;
+			morreu= game.add.sprite(x, y+20, 'morreu');
+			morreu.body.velocity.y=-155;
+			game.input.onTap.addOnce(restart,this);	
 		}
-		criaPlayer_bool=false;
-		player.kill();
-		NovoJogo.visible = true;
-		var x=player.body.x;
-		var y=player.body.y;
-		morreu= game.add.sprite(x, y+20, 'morreu');
-		morreu.body.velocity.y=-155;
-		game.input.onTap.addOnce(restart,this);	
 	}
 
 	function KillInimi(inimigo, bullet){
@@ -501,10 +506,10 @@
 				//  And fire it
 				if (ponteiroParaTiro==1){
 					bullet.reset(player.x-60, player.y+8);//isso é a salvação! :D
-					bullet.body.velocity.x = -400;
+					bullet.body.velocity.x = -700;
 				}else if (ponteiroParaTiro==2){
 					bullet.reset(player.x+60, player.y+8);//isso é a salvação! :D
-					bullet.body.velocity.x = +400;
+					bullet.body.velocity.x = +700;
 				}
 				bulletTime = game.time.now + 200;
 			}
@@ -671,6 +676,7 @@
 		premio3=false;
 		premio4=false;
 		premio5=false;
+		portaPremioPulo=false;	
 		
 	}
 	
