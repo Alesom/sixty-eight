@@ -30,8 +30,8 @@
 		game.load.image('morreu', 'assets/Morreu.png');
 		game.load.image('chao', 'assets/Ground2.png');
 		game.load.image('star', 'assets/star.png');
-		game.load.spritesheet('Jhosua', 'assets/Qua10.png', 100, 87,9);
-		game.load.spritesheet('Bar_ini', 'assets/Baratas_ini10.png', 148, 39,4);
+		game.load.spritesheet('Jhosua', 'assets/Qua18.png', 110, 90,9);
+		game.load.spritesheet('Bar_ini', 'assets/Baratas_ini12.png', 148, 39,4);
 		game.load.image('bullet', 'assets/bala2.png');
 		game.load.image('NovoJogo', 'assets/YouLose.png');
 		game.load.image('plataformaPredio1','assets/PlataformaPredio11.png');
@@ -46,6 +46,7 @@
 		game.load.image('PrecisaChave', 'assets/Youneedakey.png');
 		game.load.image('VoceGanhou', 'assets/Uwin.png');
 		game.load.image('telacheia', 'assets/telacheia2.png');
+		game.load.image('Vida', 'assets/Vida.png');
 	}
 
 
@@ -408,7 +409,7 @@
 							break;
 						case 3:
 							if (premio4==false){
-								img= game.add.button(305, 200, 'pote', colidePorta4, this, 2, 1, 0);
+								img= game.add.button(305, 200, 'Vida', colidePorta4, this, 2, 1, 0);
 								img.fixedToCamera=true;
 								img.cameraOffset.x=305;
 								img.cameraOffset.y=100;
@@ -451,8 +452,7 @@
 	}
 	function colidePorta1(a1){
 		premio1=true;
-	//	portaPremioPulo=true;
-		vidaExtra=true;
+		portaPremioPulo=true;
 		a1.kill();
 	}
 
@@ -469,8 +469,8 @@
 	}
 
 	function colidePorta4(a1){
+		vidaExtra=true;
 		premio4=true;
-		portaPremioPulo=true;
 		a1.kill();
 	}
 
