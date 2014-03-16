@@ -8,9 +8,16 @@
         body {
             margin: 0;
         }
+        canvas {
+		   display : block;
+		   margin-top: 3%;
+		   margin-left: 20%;
+		   margin-right: 20%;
+		}
     </style>
 </head>
-<body>
+<body bgcolor="black">
+												
 <script type="text/javascript">
 
 	
@@ -38,6 +45,7 @@
 		game.load.image('pote', 'assets/pote.png');
 		game.load.image('PrecisaChave', 'assets/Youneedakey.png');
 		game.load.image('VoceGanhou', 'assets/Uwin.png');
+		game.load.image('telacheia', 'assets/telacheia2.png');
 	}
 
 
@@ -79,7 +87,7 @@
 	var portaPremioVida=false;
 	var img=null;
 	var vidaExtra=false;
-	
+	var inisub=null;
 	
 	function create() {
 	
@@ -144,6 +152,7 @@
 		ground8.scale.setTo(0.1,0.01);
 		ground8.body.immovable = true;
 	
+	
 		//premios=game.add.group();
 	//	criaPremios();
 		criaChave();
@@ -162,6 +171,15 @@
 		inimigos= game.add.group();
 		criaIni();
 		
+		var abc = game.add.button(0, 0, 'telacheia', actionOnClick, this, 2, 1, 0);		
+		abc.fixedToCamera = true;
+		abc.cameraOffset.x=730;
+		abc.cameraOffset.y=550;
+		abc.inputEnabled=true;
+		
+		scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF'});
+		scoreText.fixedToCamera = true;
+		
 		stars = game.add.group();
 		
 		for (var i = 0; i < 122; i++){
@@ -178,15 +196,22 @@
 		cursors = game.input.keyboard.createCursorKeys();
 		fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 		
+	
+		
 		NovoJogo= game.add.sprite(300, 320, 'NovoJogo');
 		NovoJogo.fixedToCamera=true;
 		NovoJogo.cameraOffset.x=250;
 		NovoJogo.cameraOffset.y=100;
 		NovoJogo.visible=false;
 		NovoJogo.inputEnabled=true;
-		
+	
 	}
-	function update() {
+		
+	function actionOnClick () {
+		game.stage.scale.startFullScreen();
+	}
+
+	function update() { 
 
 		game.physics.collide(player, platforms);
 		game.physics.collide(stars, platforms);
@@ -426,7 +451,8 @@
 	}
 	function colidePorta1(a1){
 		premio1=true;
-		portaPremioPulo=true;
+	//	portaPremioPulo=true;
+		vidaExtra=true;
 		a1.kill();
 	}
 
@@ -472,19 +498,25 @@
 	}
 	function KillPlayer(player, inimigo){
 		if (vidaExtra==true){
-			
+			inisub=inimigo;
+			vidaExtra=false;
 		}else{
-			if (img!=null){
-				img.kill();		
+			if (inisub==inimigo){
+				
+			}else{
+				if (img!=null){
+					img.kill();		
+				}
+				criaPlayer_bool=false;
+				player.kill();
+				NovoJogo.visible = true;
+				var x=player.body.x;
+				var y=player.body.y;
+				morreu= game.add.sprite(x, y+20, 'morreu');
+				morreu.body.velocity.y=-155;
+				game.input.onTap.addOnce(restart,this);	
+				inimigo=null;
 			}
-			criaPlayer_bool=false;
-			player.kill();
-			NovoJogo.visible = true;
-			var x=player.body.x;
-			var y=player.body.y;
-			morreu= game.add.sprite(x, y+20, 'morreu');
-			morreu.body.velocity.y=-155;
-			game.input.onTap.addOnce(restart,this);	
 		}
 	}
 
@@ -494,7 +526,14 @@
 	}
 
 	function collectStar (player, star) {
-		  star.kill();
+    
+	    // Removes the star from the screen
+	    star.kill();
+	
+	    //  Add and update the score
+	    score += 10;
+	    scoreText.content = 'Score: ' + score;
+
 	}
 
 	function fireBullet (ponteiroParaTiro) {
@@ -677,14 +716,13 @@
 		premio4=false;
 		premio5=false;
 		portaPremioPulo=false;	
-		
+		vidaExtra=false;
 	}
 	
 	function render(){
 		
 		
 	}
-
 
 
 
