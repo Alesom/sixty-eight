@@ -47,6 +47,8 @@
 		game.load.image('VoceGanhou', 'assets/Uwin.png');
 		game.load.image('telacheia', 'assets/telacheia2.png');
 		game.load.image('Vida', 'assets/Vida.png');
+		game.load.image('restart', 'assets/restart.png');
+		game.load.image('pause', 'assets/pause.png');
 	}
 
 
@@ -177,6 +179,22 @@
 		abc.cameraOffset.x=730;
 		abc.cameraOffset.y=550;
 		abc.inputEnabled=true;
+		
+		var ab = game.add.button(0, 0, 'restart', restart_comp, this, 2, 1, 0);
+		ab.scale.setTo(0.6, 0.6);
+		ab.fixedToCamera = true;
+		ab.cameraOffset.x=680;
+		ab.cameraOffset.y=550;
+		ab.inputEnabled=true;
+		
+		var ac = game.add.button(0, 0, 'pause', pause, this, 2, 1, 0);
+		ac.scale.setTo(0.6, 0.6);
+		ac.fixedToCamera = true;
+		ac.cameraOffset.x=630;
+		ac.cameraOffset.y=550;
+		ac.inputEnabled=true;
+		
+		
 		
 		scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF'});
 		scoreText.fixedToCamera = true;
@@ -691,7 +709,12 @@
 		}
 	}
 
-
+	function pause(){
+		this.game.paused = true;
+	}
+	function restart_comp(){
+		window.self.location.href = "Versao_1.html";
+	}
 	function restart () {
 	 
 		morreu.kill();
