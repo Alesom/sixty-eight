@@ -67,10 +67,9 @@
 	var score = 0;
 	var scoreText;
 
-	var bullets;//happen
-	var bulletTime = 0;//happen
-	var fireButton;//happen
-	//var diamante;
+	var bullets;
+	var bulletTime = 0;
+	var fireButton;
 	var NovoJogo;
 	var morreu;
 	var chave;
@@ -92,7 +91,7 @@
 	var vidaExtra=false;
 	var inisub=null;
 	
-	function create() {
+	function create() {//carrega todos os conteudos
 	
 		backgroundTown = game.add.tileSprite(0, 0, 3200, 2048, 'sky');
 		
@@ -101,13 +100,13 @@
 		
 		platforms = game.add.group();
 		
-		var ground = platforms.create(0, game.world.height - 200, 'chao');
+		var ground = platforms.create(0, game.world.height - 200, 'chao');//ground são todas as plataformas
 		
 		ground.scale.setTo(2, 2);
 
 		ground.body.immovable = true;
 		
-		portas = game.add.group();
+		portas = game.add.group();//portas são os portais onde tem prêmios e o antítido.
 		
 		var ground2 = platforms.create(2,1066+10, 'plataformaPredio1');
 		ground2.scale.setTo(2, 2);
@@ -154,17 +153,14 @@
 		var ground8 = platforms.create(2790,1010, 'plataformaPredio5');
 		ground8.scale.setTo(0.1,0.01);
 		ground8.body.immovable = true;
-	
-	
-		//premios=game.add.group();
-	//	criaPremios();
+
 		criaChave();
 		
-		bullets = game.add.group();//happen
-		bullets.createMultiple(30, 'bullet');//happen
-		bullets.setAll('anchor.x', 0.5);//0.5//happen
-		bullets.setAll('anchor.y', 0.5);//1//happen	
-		bullets.setAll('outOfBoundsKill', true);//happen
+		bullets = game.add.group();//balas
+		bullets.createMultiple(30, 'bullet');// as balas são infinitas o único limite é de 30 ao mesmo tempo na tela, mas como a velocidade está grande elas saem bem rápido de tela.
+		bullets.setAll('anchor.x', 0.5);
+		bullets.setAll('anchor.y', 0.5);
+		bullets.setAll('outOfBoundsKill', true);
 		
 
 		if (criaPlayer_bool==true){
@@ -174,20 +170,20 @@
 		inimigos= game.add.group();
 		criaIni();
 		
-		var abc = game.add.button(0, 0, 'telacheia', actionOnClick, this, 2, 1, 0);		
+		var abc = game.add.button(0, 0, 'telacheia', actionOnClick, this, 2, 1, 0);//botões tela cheia
 		abc.fixedToCamera = true;
 		abc.cameraOffset.x=730;
 		abc.cameraOffset.y=550;
 		abc.inputEnabled=true;
 		
-		var ab = game.add.button(0, 0, 'restart', restart_comp, this, 2, 1, 0);
+		var ab = game.add.button(0, 0, 'restart', restart_comp, this, 2, 1, 0);//botões reiniciar
 		ab.scale.setTo(0.6, 0.6);
 		ab.fixedToCamera = true;
 		ab.cameraOffset.x=680;
 		ab.cameraOffset.y=550;
 		ab.inputEnabled=true;
 		
-		var ac = game.add.button(0, 0, 'pause', pause, this, 2, 1, 0);
+		var ac = game.add.button(0, 0, 'pause', pause, this, 2, 1, 0);//botões pausar
 		ac.scale.setTo(0.6, 0.6);
 		ac.fixedToCamera = true;
 		ac.cameraOffset.x=630;
@@ -196,8 +192,24 @@
 		
 		
 		
+		
+		
+		var sprite = game.add.sprite(0,0);
+		sprite.fixedToCamera = true;
+		
 		scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#FFF'});
-		scoreText.fixedToCamera = true;
+		sprite.addChild(scoreText);
+		
+		//position the cameraOffset of my Sprite
+		sprite.cameraOffset.x = 10;
+		sprite.cameraOffset.y = 10;
+		
+		
+	//	scoreText.fixedToCamera = true;
+	//	scoreText.fixedToCamera = true;
+	//	scoreText.cameraOffset.x=630;
+	//	scoreText.cameraOffset.y=550;
+	//	scoreText.inputEnabled=true;
 		
 		stars = game.add.group();
 		
@@ -214,9 +226,7 @@
 
 		cursors = game.input.keyboard.createCursorKeys();
 		fireButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-		
-	
-		
+
 		NovoJogo= game.add.sprite(300, 320, 'NovoJogo');
 		NovoJogo.fixedToCamera=true;
 		NovoJogo.cameraOffset.x=250;
@@ -226,12 +236,12 @@
 	
 	}
 		
-	function actionOnClick () {
+	function actionOnClick () {//começa tela cheia
 		game.stage.scale.startFullScreen();
 	}
 
-	function update() { 
-
+	function update() {
+		//colisões
 		game.physics.collide(player, platforms);
 		game.physics.collide(stars, platforms);
 		game.physics.collide(inimigos, platforms);
@@ -239,25 +249,26 @@
 		
 		
 		player.body.velocity.x = 0;
-		
-		if (cursors.left.isDown){
-			player.body.velocity.x = -150;
-			player.animations.play('left');
-			ponteiroParaTiro=1;
-			clickSingle=true;
-		}else if (cursors.right.isDown){
+		if (cursors.right.isDown){
 			player.body.velocity.x = 150;
 			player.animations.play('right');
 			ponteiroParaTiro=2;
 			clickSingle=true;
+		}else if (cursors.left.isDown){//verifica botões
+			player.body.velocity.x = -150;
+			player.animations.play('left');
+			ponteiroParaTiro=1;
+			clickSingle=true;
+	//		fireBullet(ponteiroParaTiro);
 		}else{
 			player.animations.stop();
 			player.frame = 4;
 			ponteiroParaTiro=0;
 		}
-		if (fireButton.isDown && ponteiroParaTiro!=0){
+		if (fireButton.isDown && (ponteiroParaTiro!=0)){
 			fireBullet(ponteiroParaTiro);
 		}
+		
 		if (cursors.up.isDown && player.body.touching.down){
 			var a;
 			if (portaPremioPulo==false){
@@ -268,7 +279,9 @@
 			}
 			player.body.velocity.y = -a;//altura do pulo
 		}
-		for(var i=0; i < contadorIni; i++){//novo 
+	
+	
+		for(var i=0; i < contadorIni; i++){ //inimigos
 			if (inimigos.getAt(i)){
 				switch (i){
 					case 0:
@@ -371,25 +384,25 @@
 							}while(k<200 || b>(game.world.height-400));
 						
 							
-							inimigos.getAt(i).body.x=k;//here
+							inimigos.getAt(i).body.x=k;
 							inimigos.getAt(i).body.y=b;
 						}
 						break;
 					}
 			}
-		}//end novo
+		}// end inimigos
 		if (NovoJogo.visible){
 			NovoJogo.events.onInputDown.add(restart,this);
 		}
-		game.physics.overlap(inimigos, player, KillPlayer, null, this); //ARRUMAR DPS!
+		//sobreposição
+		game.physics.overlap(inimigos, player, KillPlayer, null, this); 
 		game.physics.overlap(chave, player, getChave, null, this);
 		game.physics.overlap(inimigos, bullets, KillInimi, null, this);
 		game.physics.overlap(player, portas, colidePorta,null, this);
-//		restart ();
 
 	}
 
-	function colidePorta(player, porta){
+	function colidePorta(player, porta){ //colide porta e redireciona para os prêmios de cada porta
 		if (cursors.down.isDown && (clickSingle==true)){
 			clickSingle=false;
 			for (var i=0; i<6; i++){
@@ -463,11 +476,11 @@
 				}
 			}
 				
-		}else{
-		//	alert('not click');
 		}
 		
 	}
+	
+	//entra em contato com as portas
 	function colidePorta1(a1){
 		premio1=true;
 		portaPremioPulo=true;
@@ -503,18 +516,19 @@
 	}
 	function colidePorta7(a1){
 		a1.kill();
-	}
+	}//final de contato com as portas
 
-	function criaChave(){
+	function criaChave(){ //criando a chave do apartamento 68
 		chave=game.add.sprite(200,400,'chave');
 		chave.scale.setTo(0.2,0.2);
 	}
 
-	function getChave (chave, player){
+	function getChave (chave, player){//player pegou a chave
 		chave.kill();
 		pegouChave=true;
 	}
-	function KillPlayer(player, inimigo){
+	
+	function KillPlayer(player, inimigo){//player morreu
 		if (vidaExtra==true){
 			inisub=inimigo;
 			vidaExtra=false;
@@ -538,36 +552,38 @@
 		}
 	}
 
-	function KillInimi(inimigo, bullet){
+	function KillInimi(inimigo, bullet){//inimigo morreu
 		inimigo.kill();
 		bullet.kill();
+		score += 50;
+	    scoreText.content = 'Score: ' + score;
 	}
 
-	function collectStar (player, star) {
+	function collectStar (player, star) {//coleciona estrelas
     
-	    // Removes the star from the screen
 	    star.kill();
 	
-	    //  Add and update the score
 	    score += 10;
 	    scoreText.content = 'Score: ' + score;
 
 	}
 
-	function fireBullet (ponteiroParaTiro) {
+	function fireBullet (ponteiroParaTiro) {// atira
 
 		if (game.time.now > bulletTime){
 			bullet = bullets.getFirstExists(false);
 
 			if (bullet){
-				//  And fire it
+				
 				if (ponteiroParaTiro==1){
-					bullet.reset(player.x-60, player.y+8);//isso é a salvação! :D
+					bullet.reset(player.x-60, player.y+8);
 					bullet.body.velocity.x = -700;
 				}else if (ponteiroParaTiro==2){
-					bullet.reset(player.x+60, player.y+8);//isso é a salvação! :D
+					bullet.reset(player.x+60, player.y+8);
 					bullet.body.velocity.x = +700;
 				}
+				
+				
 				bulletTime = game.time.now + 200;
 			}
 		}
@@ -688,10 +704,7 @@
 							var k=game.world.randomX;
 							var b=game.world.randomY;
 						}while(k<200 || b>(game.world.height-400));
-					//	do{
-					//		var b=game.world.randomY;
-					//	}while(b>game.world.height-400);
-						
+					
 						var ini = inimigos.create(k,b,'Bar_ini');//here
 						ini.body.gravity.y=1;
 						ini.body.collideWorldBounds = false;
@@ -746,9 +759,6 @@
 		
 		
 	}
-
-
-
 	</script>
 </body>
 </html>
